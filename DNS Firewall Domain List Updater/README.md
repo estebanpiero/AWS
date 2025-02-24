@@ -59,8 +59,8 @@ This is the entry point for the Lambda function. It:
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::my-threat-intel-bucket",
-                "arn:aws:s3:::my-threat-intel-bucket/*"
+                "arn:aws:s3:::BUCKET_NAME",
+                "arn:aws:s3:::BUCKET_NAME/*"
             ]
         }
     ]
