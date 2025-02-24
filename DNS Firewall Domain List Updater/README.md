@@ -30,18 +30,18 @@ This is the entry point for the Lambda function. It:
 
 ## Deployment
 
-### 1.Create or Update the Lambda Function:
+### 1. `Create or Update the Lambda Function:`
 
 - In the AWS Lambda console, create a new function or update an existing one.
 - Upload the `DNS_List_Updater.py` file (or the packaged ZIP) as your Lambda code.
 
-### 2.Configure S3 Trigger:
+### 2. `Configure S3 Trigger:`
 
 - Set up an S3 bucket event notification to trigger the Lambda function when a new object is created.
 - Update the BUCKET_NAME and DOMAIN_LIST_NAME variables in the code with your actual S3 bucket name and Route 53 Resolver Domain List name.
 
 
-### 3. Set Up IAM Permissions:
+### 3. `Set Up IAM Permissions:`
 
 - Ensure that the Lambda execution role has permissions to:
         - Read objects from the specified S3 bucket.
