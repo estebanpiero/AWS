@@ -16,7 +16,7 @@ The Lambda function performs the following tasks:
 
 ## Function Code
 
-The core functionality is defined in two functions within the `lambda_function.py` file:
+The core functionality is defined in two functions within the `DNS_List_Updater.py` file:
 
 ### 1. `get_firewall_domain_list_id`
 This helper function retrieves the ID of a DNS Firewall Domain List by its name using a paginator to list all domain lists.
@@ -33,7 +33,7 @@ This is the entry point for the Lambda function. It:
 ### 1.Create or Update the Lambda Function:
 
 - In the AWS Lambda console, create a new function or update an existing one.
-- Upload the DNS_List_Updater.py file (or the packaged ZIP) as your Lambda code.
+- Upload the `DNS_List_Updater.py` file (or the packaged ZIP) as your Lambda code.
 
 ### 2.Configure S3 Trigger:
 
