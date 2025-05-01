@@ -1,4 +1,4 @@
-const apiBaseUrl = "https://uumush3y77.execute-api.us-east-1.amazonaws.com/prod/events";
+const apiBaseUrl = "<API>";
 
 document.addEventListener('DOMContentLoaded', function() {
     const eventsContainer = document.getElementById('events');
