@@ -2,7 +2,7 @@
 
 A serverless web application built on AWS for managing and displaying event announcements. The solution leverages AWS Lambda, API Gateway, DynamoDB, and S3 for a scalable, maintenance-free architecture.
 
-## ?? Architecture Overview
+## Architecture Overview
 
 ![Architecture Diagram]
 
@@ -14,7 +14,7 @@ A serverless web application built on AWS for managing and displaying event anno
 - **AWS IAM**: Identity and access management
 - **Amazon CloudWatch**: Monitoring and logging
 
-## ?? Technical Architecture
+## Technical Architecture
 
 ### Frontend (S3 Static Website)
 - HTML5, CSS3, and JavaScript
@@ -35,7 +35,7 @@ GET /events/{id} - Get single event
 PUT /events/{id} - Update an event
 
 
-## ?? Implementation Details
+## Implementation Details
 
 ### DynamoDB Schema
 ```json
