@@ -2,9 +2,6 @@
 
 A serverless web application built on AWS for managing and displaying event announcements. The solution leverages AWS Lambda, API Gateway, DynamoDB, and S3 for a scalable, maintenance-free architecture.
 
-## Architecture Overview
-
-![Architecture Diagram]
 
 ### AWS Services Used
 - **Amazon S3**: Hosts the static website (HTML, CSS, JavaScript)
