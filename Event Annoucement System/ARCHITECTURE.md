@@ -8,65 +8,50 @@ graph TB
     User[👤 User] --> Browser[🌐 Web Browser]
 
     %% Frontend Layer
-    Browser --> S3[📦 S3 Static Website<br/>- index.html<br/>- events.html<br/>- login.html<br/>- register.html<br/>- invite.html<br/>- script.js]
+    Browser --> S3[📦 S3 Static Website<br/>index.html, events.html<br/>login.html, register.html<br/>invite.html, script.js]
 
     %% Authentication Layer
-    Browser --> Cognito[🔐 AWS Cognito<br/>User Pool<br/>- JWT Tokens<br/>- Email Verification<br/>- Password Policies]
+    Browser --> Cognito[🔐 AWS Cognito<br/>User Pool<br/>JWT Tokens<br/>Email Verification]
 
     %% API Gateway Layer
     S3 --> APIGW[🚪 API Gateway<br/>REST API Endpoints]
 
     %% API Endpoints
-    APIGW --> Events_POST[POST /events<br/>Create Event]
-    APIGW --> Events_GET[GET /events<br/>List Events]
-    APIGW --> Events_DELETE[DELETE /events/{id}<br/>Delete Event]
-    APIGW --> Invites_POST[POST /invitations<br/>Generate Invitation]
-    APIGW --> Invites_GET[GET /invitations/{token}<br/>Validate Invitation]
+    APIGW --> PostEvents[POST /events<br/>Create Event]
+    APIGW --> GetEvents[GET /events<br/>List Events]
+    APIGW --> DelEvents[DELETE /events/id<br/>Delete Event]
+    APIGW --> PostInvites[POST /invitations<br/>Generate Invitation]
+    APIGW --> GetInvites[GET /invitations/token<br/>Validate Invitation]
 
     %% Lambda Functions
-    Events_POST --> Lambda1[⚡ sendEventNotification<br/>Lambda Function]
-    Events_GET --> Lambda2[⚡ listEventsNotification<br/>Lambda Function]
-    Events_DELETE --> Lambda3[⚡ deleteEventNotification<br/>Lambda Function]
-    Invites_POST --> Lambda4[⚡ generateInvitation<br/>Lambda Function]
-    Invites_GET --> Lambda5[⚡ validateInvitation<br/>Lambda Function]
+    PostEvents --> Lambda1[⚡ sendEventNotification<br/>Lambda Function]
+    GetEvents --> Lambda2[⚡ listEventsNotification<br/>Lambda Function]
+    DelEvents --> Lambda3[⚡ deleteEventNotification<br/>Lambda Function]
+    PostInvites --> Lambda4[⚡ generateInvitation<br/>Lambda Function]
+    GetInvites --> Lambda5[⚡ validateInvitation<br/>Lambda Function]
 
     %% Database Layer
-    Lambda1 --> DDB1[🗄️ DynamoDB<br/>events-table<br/>- id (PK)<br/>- title<br/>- date<br/>- address<br/>- description<br/>- creator_name]
+    Lambda1 --> DDB1[🗄️ DynamoDB<br/>events-table<br/>id, title, date<br/>address, description]
     Lambda2 --> DDB1
     Lambda3 --> DDB1
 
-    Lambda4 --> DDB2[🗄️ DynamoDB<br/>invitations-table<br/>- token (PK)<br/>- inviter_email<br/>- expires_at<br/>- used<br/>- created_at]
+    Lambda4 --> DDB2[🗄️ DynamoDB<br/>invitations-table<br/>token, inviter_email<br/>expires_at, used]
     Lambda5 --> DDB2
 
     %% Notification Layer
-    Lambda1 --> SNS[📧 SNS Topic<br/>Email Notifications<br/>- New Event Alerts]
+    Lambda1 --> SNS[📧 SNS Topic<br/>Email Notifications<br/>New Event Alerts]
 
     %% External Services
-    S3 --> Maps[🗺️ Google Maps<br/>Embedded Maps<br/>Location Display]
+    S3 --> Maps[🗺️ Google Maps<br/>Embedded Maps]
     Browser --> GoogleCal[📅 Google Calendar<br/>Add to Calendar]
     Browser --> AppleCal[🍎 Apple Calendar<br/>ICS Download]
 
     %% IAM Security
-    Lambda1 -.-> IAM[🔒 IAM Roles<br/>- DynamoDB Access<br/>- SNS Publish<br/>- CloudWatch Logs]
+    Lambda1 -.-> IAM[🔒 IAM Roles<br/>DynamoDB Access<br/>SNS Publish<br/>CloudWatch Logs]
     Lambda2 -.-> IAM
     Lambda3 -.-> IAM
     Lambda4 -.-> IAM
     Lambda5 -.-> IAM
-
-    %% Styling
-    classDef frontend fill:#e1f5fe
-    classDef auth fill:#f3e5f5
-    classDef api fill:#e8f5e8
-    classDef lambda fill:#fff3e0
-    classDef database fill:#fce4ec
-    classDef external fill:#f1f8e9
-
-    class Browser,S3 frontend
-    class Cognito auth
-    class APIGW,Events_POST,Events_GET,Events_DELETE,Invites_POST,Invites_GET api
-    class Lambda1,Lambda2,Lambda3,Lambda4,Lambda5 lambda
-    class DDB1,DDB2 database
-    class Maps,GoogleCal,AppleCal,SNS external
 ```
 
 ## 🔄 Data Flow Diagrams
