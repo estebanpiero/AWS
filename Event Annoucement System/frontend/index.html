@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event - Event Announcement System</title>
+    <script>
+        // Immediate authentication check - before any content loads
+        if (!localStorage.getItem('accessToken')) {
+            window.location.replace('login.html');
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-solid: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #f8fafc;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: var(--primary);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .view-events-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-events-btn:hover {
+            background: var(--primary-solid);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: white;
+        }
+
+        .form-container {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-solid);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .map-container {
+            margin-top: 15px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            transform-origin: top;
+        }
+
+        .map-container.show {
+            animation: expandMap 0.4s ease-out;
+        }
+
+        @keyframes expandMap {
+            from {
+                opacity: 0;
+                transform: scaleY(0);
+            }
+            to {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 18px 24px;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin: 20px 0;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .error-text {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-elements::before,
+        .floating-elements::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0.05;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .floating-elements::before {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: -150px;
+            animation-delay: -2s;
+        }
+
+        .floating-elements::after {
+            width: 200px;
+            height: 200px;
+            bottom: 10%;
+            right: -100px;
+            animation-delay: -4s;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: var(--radius);
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .nav-link {
+                position: static;
+                display: inline-block;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements"></div>
+
+    <a href="events.html" class="view-events-btn">
+        <i class="fas fa-calendar-alt"></i> View Events
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-plus-circle"></i> Create Event</h1>
+            <p>Plan and announce your next amazing event</p>
+        </div>
+
+        <div class="form-container">
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="title"><i class="fas fa-heading"></i> Event Title</label>
+                    <input type="text" id="title" name="title" required
+                           placeholder="Enter an engaging event title" maxlength="100">
+                    <div id="titleError" class="error-text"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="date"><i class="fas fa-calendar"></i> Event Date & Time</label>
+                    <input type="datetime-local" id="date" name="date" required>
+                    <div id="dateError" class="error-text"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address"><i class="fas fa-map-marker-alt"></i> Event Address</label>
+                    <input type="text" id="address" name="address"
+                           placeholder="Enter event location (optional)" oninput="updateMap()">
+                    <div id="addressError" class="error-text"></div>
+                    <div id="mapContainer" class="map-container" style="display: none;">
+                        <iframe id="mapFrame" width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="creator_name"><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="creator_name" name="creator_name" required
+                           placeholder="Enter your name">
+                    <div id="creatorError" class="error-text"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description"><i class="fas fa-align-left"></i> Event Description</label>
+                    <textarea id="description" name="description" required
+                              placeholder="Describe your event in detail..." minlength="10" maxlength="500"></textarea>
+                    <div id="descriptionError" class="error-text"></div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitButton">
+                    <i class="fas fa-rocket"></i> Create Event
+                    <div class="spinner" id="spinner"></div>
+                </button>
+            </form>
+
+            <div id="successAlert" class="alert alert-success" role="alert"></div>
+            <div id="errorAlert" class="alert alert-error" role="alert"></div>
+        </div>
+    </div>
+
+<script>
+    // Authentication check
+    function checkAuthentication() {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            window.location.href = 'login.html';
+            return false;
+        }
+        return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication first
+        if (!checkAuthentication()) {
+            return;
+        }
+
+        const form = document.getElementById('eventForm');
+        const submitButton = document.getElementById('submitButton');
+        const spinner = document.getElementById('spinner');
+        const successAlert = document.getElementById('successAlert');
+        const errorAlert = document.getElementById('errorAlert');
+
+        function showAlert(type, message) {
+            const alert = type === 'success' ? successAlert : errorAlert;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.style.display = 'none';
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            const title = document.getElementById('title').value.trim();
+            const date = document.getElementById('date').value;
+            const address = document.getElementById("address").value.trim();
+            const description = document.getElementById("description").value.trim();
+            const creator_name = document.getElementById("creator_name").value.trim();
+
+            hideError('titleError');
+            hideError('dateError');
+            hideError('descriptionError');
+            hideError('creatorError');
+
+            let isValid = true;
+
+            if (!title || title.length < 3) {
+                showError('titleError', 'Title must be at least 3 characters long');
+                isValid = false;
+            }
+
+            if (!date) {
+                showError('dateError', 'Please select a date and time');
+                isValid = false;
+            } else {
+                const selectedDate = new Date(date);
+                const now = new Date();
+                if (selectedDate <= now) {
+                    showError('dateError', 'Event date must be in the future');
+                    isValid = false;
+                }
+            }
+
+            if (description.length < 10 || description.length > 500) {
+                showError('descriptionError', 'Description must be between 10 and 500 characters');
+                isValid = false;
+            }
+
+            if (!creator_name || creator_name.length < 2) {
+                showError('creatorError', 'Please enter your name');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const payload = {
+                title: title,
+                date: date,
+                address: address,
+                description: description,
+                creator_name: creator_name
+            };
+
+            submitButton.disabled = true;
+            spinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch('https://uumush3y77.execute-api.us-east-1.amazonaws.com/prod/events', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                let responseData;
+                const responseText = await response.text();
+
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    throw new Error('Invalid response format');
+                }
+
+                if (!response.ok) {
+                    throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                showAlert('success', '🎉 Event created successfully! Notifications have been sent.');
+                form.reset();
+
+            } catch (error) {
+                console.error('Error creating event:', error);
+                showAlert('error', `Error: ${error.message}`);
+            } finally {
+                submitButton.disabled = false;
+                spinner.style.display = 'none';
+            }
+        });
+    });
+
+    function updateMap() {
+        const address = document.getElementById("address").value.trim();
+        const mapContainer = document.getElementById("mapContainer");
+        const mapFrame = document.getElementById("mapFrame");
+
+        if (address) {
+            const encodedAddress = encodeURIComponent(address);
+            mapFrame.src = `https://maps.google.com/maps?q=${encodedAddress}&output=embed`;
+            mapContainer.style.display = 'block';
+            mapContainer.classList.add('show');
+        } else {
+            mapContainer.style.display = 'none';
+            mapContainer.classList.remove('show');
+        }
+    }
+</script>
+
+</body>
+</html>
