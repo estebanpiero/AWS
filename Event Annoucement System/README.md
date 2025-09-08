@@ -6,29 +6,14 @@ A complete serverless event management system built on AWS with user authenticat
 
 This project demonstrates a modern serverless architecture using AWS services to create a scalable, cost-effective, and secure event management system with invitation-based user registration.
 
-## 🛠️ Technologies Used
+### System Components
 
-### Frontend
-- **HTML5/CSS3/JavaScript** - Modern responsive web interface
-- **Font Awesome** - Icons and visual elements
-- **Google Maps API** - Location visualization
-- **Vanilla JavaScript** - No frameworks for simplicity
-
-### AWS Services
-- **Cognito** - User authentication and management
-- **S3** - Static website hosting and file storage
-- **Lambda** - Serverless compute for business logic
-- **API Gateway** - RESTful API endpoints
-- **DynamoDB** - NoSQL database for event and invitation storage
-- **SNS** - Simple Notification Service for email alerts
-- **IAM** - Identity and Access Management for security											  
-
-## 📋 Prerequisites
-
-- AWS Account with appropriate permissions
-- AWS CLI configured
-- Basic knowledge of HTML/JavaScript
-- Understanding of AWS services
+```
+User Authentication (Cognito) → Frontend (S3) → API Gateway → Lambda Functions → DynamoDB
+                                                                    ↓                ↓
+                                                              SNS → Email      Invitation
+                                                              Notifications    System
+```
 
 ## 🛠️ Technologies Used
 
@@ -77,7 +62,7 @@ aws cognito-idp create-user-pool \
 Create User Pool Client:
 ```bash
 aws cognito-idp create-user-pool-client \
-    --user-pool-id us-east-1_77ER4ADqH \
+    --user-pool-id YOUR_USER_POOL_ID \
     --client-name EventAnnouncementWebClient \
     --explicit-auth-flows ALLOW_USER_PASSWORD_AUTH ALLOW_REFRESH_TOKEN_AUTH \
     --region us-east-1
@@ -261,7 +246,7 @@ def lambda_handler(event, context):
         })
 
         # Generate invitation URL
-        base_url = os.environ.get('FRONTEND_URL', 'http://event-announcement-system-site.s3-website-us-east-1.amazonaws.com')
+        base_url = os.environ.get('FRONTEND_URL', 'http://your-bucket-name.s3-website-us-east-1.amazonaws.com')
         invitation_url = f"{base_url}/register.html?token={invitation_token}"
 
         return {
@@ -543,11 +528,11 @@ echo "API URL: https://$API_ID.execute-api.us-east-1.amazonaws.com/prod"
 ### Step 7: Create S3 Bucket for Website
 
 ```bash
-aws s3 mb s3://event-announcement-system-site --region us-east-1
+aws s3 mb s3://your-event-system-bucket --region us-east-1
 
 # Configure for static website hosting
 aws s3api put-bucket-website \
-    --bucket event-announcement-system-site \
+    --bucket your-event-system-bucket \
     --website-configuration '{
         "IndexDocument": {"Suffix": "index.html"},
         "ErrorDocument": {"Key": "error.html"}
@@ -555,7 +540,7 @@ aws s3api put-bucket-website \
 
 # Set public read policy
 aws s3api put-bucket-policy \
-    --bucket event-announcement-system-site \
+    --bucket your-event-system-bucket \
     --policy '{
         "Version": "2012-10-17",
         "Statement": [{
@@ -563,7 +548,7 @@ aws s3api put-bucket-policy \
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::event-announcement-system-site/*"
+            "Resource": "arn:aws:s3:::your-event-system-bucket/*"
         }]
     }'
 ```
@@ -572,14 +557,14 @@ aws s3api put-bucket-policy \
 
 Upload the HTML, CSS, and JavaScript files to S3:
 ```bash
-aws s3 sync ./frontend/ s3://event-announcement-system-site/
+aws s3 sync ./frontend/ s3://your-event-system-bucket/
 ```
 
 ## 🔧 Configuration Details
 
 ### Cognito Configuration
-- **User Pool ID**: `us-east-1_77ER4ADqH`
-- **Client ID**: `4g1gvg11ap1qn3apikj6rdpuir`
+- **User Pool ID**: `YOUR_USER_POOL_ID`
+- **Client ID**: `YOUR_CLIENT_ID`
 - **Authentication Flow**: USER_PASSWORD_AUTH
 - **Email Verification**: Required for registration
 
@@ -693,7 +678,7 @@ By building this project, you'll learn:
 
 ## 🔗 Live Demo
 
-Website URL: `http://event-announcement-system-site.s3-website-us-east-1.amazonaws.com`
+Website URL: `http://your-bucket-name.s3-website-us-east-1.amazonaws.com`
 
 ## 📝 Next Steps
 
